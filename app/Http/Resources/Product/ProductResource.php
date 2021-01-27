@@ -17,9 +17,14 @@ class ProductResource extends JsonResource
         return [
             'name' => $this->name,
             'description' => $this->details,
-            'price' => $this->price,
-            'stock' => $this->stock,
-            'discount' => $this->discount
+            'price' => $this->price == 0 ? 'Free' : $this->price,
+            'stock' => $this->stock == 0 ? 'Out Of Stock' : $this->stock,
+            'discount' => $this->discount,
+            'total_price' => round(( 1 - ($this->discount / 100) ) * $this->price, 1),
+            'rating' => $this->reviews->count() > 0 ? round($this->reviews->sum('star') / $this->reviews->count(),1) : '',
+            'href' => [
+                'reviews' => route('reviews.index', $this->id)
+            ] 
         ];
     }
 }
