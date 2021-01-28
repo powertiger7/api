@@ -78,8 +78,9 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Product $product)
-    {
-        //
+    {   
+        $product->update($request->all());
+        return response()->json(new ProductResource($product),200);
     }
 
     /**
