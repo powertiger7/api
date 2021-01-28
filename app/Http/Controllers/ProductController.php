@@ -90,7 +90,12 @@ class ProductController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function destroy(Product $product)
-    {
-        //
+    {   
+        if($product){
+            $product->delete();
+            return response()->json("Deleted Successfully!",200);
+        }else{
+            return response()->json("This Product Isn't Exist",200);
+        }
     }
 }
