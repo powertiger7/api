@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Review;
 use App\Models\Product;
 use Illuminate\Http\Request;
+use App\Http\Requests\ReviewRequest;
+use App\Http\Resources\Review\ReviewResource;
 use App\Http\Resources\Review\ReviewCollection;
 
 class ReviewController extends Controller
@@ -17,6 +19,10 @@ class ReviewController extends Controller
     public function index(Product $product)
     {
         return ReviewCollection::collection($product->reviews);
+    }
+
+    public function all(){
+        return ReviewResource::collection(Review::paginate(20));
     }
 
     /**
@@ -35,9 +41,10 @@ class ReviewController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ReviewRequest $request)
     {
-        //
+        $review = Review::create($request->all());
+        return response()->json($review,200);
     }
 
     /**
@@ -46,9 +53,10 @@ class ReviewController extends Controller
      * @param  \App\Models\Review  $review
      * @return \Illuminate\Http\Response
      */
-    public function show(Review $review)
+    public function show(Product $product, Review $review)
     {
-        //
+        $review = new ReviewResource($review);
+        return response()->json($review ,200);
     }
 
     /**
@@ -69,9 +77,15 @@ class ReviewController extends Controller
      * @param  \App\Models\Review  $review
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Review $review)
-    {
-        //
+    public function update(Request $request, Product $product, Review $review)
+    {       
+     
+        $review->update($request->all());
+
+        return response()->json([
+            'msg' => 'Updated Successfully',
+            'new_review' => new ReviewResource($review)
+        ],200);
     }
 
     /**
@@ -80,8 +94,13 @@ class ReviewController extends Controller
      * @param  \App\Models\Review  $review
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Review $review)
+    public function destroy(Product $product, Review $review)
     {
-        //
+        if($review){
+            $review->delete();
+            return response()->json("Deleted Successfully!",200);
+        }else{
+            return response()->json("This Review Isn't Exist",200);
+        }
     }
 }
