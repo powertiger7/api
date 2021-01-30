@@ -17,7 +17,7 @@ trait ExceptionTrait{
             return response()->json('Page Not FOund',404);
         }
 
-        return parent::render($request, $e);
+        return parent::render($request, $e );
     }
 
 }
