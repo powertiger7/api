@@ -16,6 +16,8 @@ trait ExceptionTrait{
         if ($e instanceof NotFoundHttpException) {
             return response()->json('Page Not FOund',404);
         }
+
+        return parent::render($request, $e);
     }
 
 }
